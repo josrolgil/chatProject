@@ -34,30 +34,10 @@ class ChatServiceImpl extends UnicastRemoteObject implements ChatService {
 	}
 	//Estado: pendiente
 	public Client connectToUser(String nick, Client init) throws RemoteException{
-		/*   METODO ANTIGUO
-		Client aux = null;
-		l.get(indexOf(init)).setBusy(true);
-		for (Client c:l)			
-			if(c.getNickname().equals(nick) && c.getBusy()==false){
-				aux=c;
-				System.out.println("Levantamos el candado");
-				c.setBusy(true);
-				c.message(init.getNickname()+" wants to talk with you!");
-				c.message("Please get connect");
-				}
-		if(aux==null)
-			l.get(indexOf(init)).setBusy(false);	
-		return aux; */
-
 		Client aux=null;
-		System.out.println("Parámetros:" + nick + " "+init.getNickname());
-		//l.get(l.indexOf(init)).setFriend(nick);
 		init.setFriend(nick);
 		for(Client c:l){
-			System.out.println("Este cliente es:"+c.getNickname()+" y se busca a "+nick);
-			System.out.println("Este cliente está hablandon con:"+c.getFriend());
 			if(c.getNickname().equals(nick) && (c.getFriend().equals("") ||c.getFriend().equals(init.getNickname()))){
-				System.out.println("Levantamos el candado");
 				c.message("!!!!!! "+init.getNickname()+" wants to talk with you!");
 				init.message("Waiting for response");
 				while(c.getFriend().equals(""));
@@ -81,7 +61,6 @@ class ChatServiceImpl extends UnicastRemoteObject implements ChatService {
 	public void send(String n, String mssg) throws RemoteException{
 		for(Client c:l){
 			if(c.getNickname().equals(n)){
-				System.out.println("ENVIANDOOO");
 				c.message(mssg);
 			}
 		}
