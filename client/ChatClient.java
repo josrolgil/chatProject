@@ -45,7 +45,7 @@ class ChatClient{
 				showUsers(l);
 				friend=sc.nextLine();
 				System.out.println("Se ha seleccionado: " +friend);
-				partner=srv.connectToUser(friend,c);
+				partner=srv.connectToUser(friend,c);  //¿Cómo hago para llamar a connectToServer solo cuando aqui no se encuentre?
 				while(partner!=null  && !mssg.equals("exit") && !friend.equals("exit")){
 					mssg=sc.nextLine();
               		partner.sendComment(c.getNickname(),mssg);

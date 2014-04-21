@@ -27,4 +27,11 @@ class RootChatServiceImpl extends UnicastRemoteObject implements RootChatService
        return l;
     }
     
+    //Estado: devolverá un 1 si un cliente se encuentra en la lista de otro Server
+    public int connectToServer(ChatService s) throws RemoteException{
+      int resul = 0;  
+      
+      return resul;
+    }
+    
 }

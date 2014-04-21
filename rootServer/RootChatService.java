@@ -13,4 +13,5 @@ interface RootChatService extends Remote {
     void chargeServer (ChatService s) throws RemoteException;
     void deleteServer (ChatService s) throws RemoteException;
     List<ChatService> getServers() throws RemoteException;
+    int connectToServer(ChatService s) throws RemoteException;
 }
