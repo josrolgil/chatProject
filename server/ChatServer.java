@@ -5,27 +5,38 @@
 */
 	import java.rmi.*;
 	import java.rmi.server.*;
-
+	import java.util.*;
+	
 	class ChatServer {
 		static public void main (String args[]){
-			if (args.length!=1){
-				System.err.println("Use: ChatServer RegisterPortNumber");
+		  List<ChatService> l;
+		  List<Client> lista;
+			if (args.length!=3){
+				System.err.println("Use: ChatServer RegisterHost RegisterPortNumber1 RegisterPortNumber2");
 				return;
 			}
 			if (System.getSecurityManager() == null)
 				System.setSecurityManager(new RMISecurityManager());
 			try	{
 				System.out.println("Loading.......................Ready!");
-				ChatServiceImpl srv = new ChatServiceImpl();
-				Naming.rebind("rmi://localhost:" + args[0] + "/Chat", srv);
-
-
+				ChatServiceImpl c = new ChatServiceImpl();
+		    //Cliente del servicio RootChat
+				RootChatService srv = (RootChatService) Naming.lookup("//" + args[0] + ":" + args[1] + "/RootChat");
+				//Servidor del servicio Chat
+				Naming.rebind("rmi://localhost:" + args[2] + "/Chat", c);
+				srv.chargeServer(c);
+        l = srv.getServers();
+        System.out.println("Tamaño es: " + l.size());         
+        
+        //Thread.sleep(10000);
+        srv.deleteServer(c);
+                
 			} catch (RemoteException e) {
             	System.err.println("Communication Error: " + e.toString());
             	System.exit(1);
         	}
         		catch (Exception e) {
-            	System.err.println("Excepction in ChatServer:");
+            	System.err.println("Exception in ChatServer:");
             	e.printStackTrace();
             	System.exit(1);
         	}		

@@ -25,7 +25,7 @@ class ChatClient{
 		if(System.getSecurityManager()==null)
 			System.setSecurityManager(new SecurityManager());
 		try{
-           	ChatService srv = (ChatService) Naming.lookup("//" + args[0] + ":" + args[1] + "/Chat");
+      ChatService srv = (ChatService) Naming.lookup("//" + args[0] + ":" + args[1] + "/Chat");
 			ClientImpl c = new ClientImpl();
 			System.out.println("Starting Client.................Ready!");
 			System.out.println("'exit' to close");
@@ -44,13 +44,13 @@ class ChatClient{
 				l=srv.getUsers();
 				showUsers(l);
 				friend=sc.nextLine();
-				System.out.println("Se ha seleccionado: "+friend);
+				System.out.println("Se ha seleccionado: " +friend);
 				partner=srv.connectToUser(friend,c);
-				while(partner!=null  &&!mssg.equals("exit") && !friend.equals("exit")){
+				while(partner!=null  && !mssg.equals("exit") && !friend.equals("exit")){
 					mssg=sc.nextLine();
               		partner.sendComment(c.getNickname(),mssg);
               		if(mssg.equals("exit"))
-              			srv.disconnect(c);
+              			srv.disconnect(partner,c);
               	}
             }
 			srv.deleteUser(c);

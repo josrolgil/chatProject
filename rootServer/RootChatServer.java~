@@ -1,0 +1,22 @@
+/*
+	File: RootChatServer.java
+	Author: Francisco Ortiz Abril
+	Description:  
+*/
+
+import java.util.*;
+import java.rmi.*;
+import java.rmi.server.*;
+
+class RootChatServer {
+    static public void main (String args[]){
+       if(args.length != 1){
+          System.err.println("Use: RootCharServer RegisterPortNumber");
+          return;
+       }
+       
+       if(System.getSecurityManager() == null)
+          System.setSecurityManager(new RMISecurityManager());
+       try{
+          System.out.println("Loading................Ready!");
+          RootChatServiceImpl srv = 
