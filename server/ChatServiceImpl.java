@@ -9,9 +9,11 @@ import java.rmi.server.*;
 
 class ChatServiceImpl extends UnicastRemoteObject implements ChatService {
 	List<Client> l;
+	String id;
 	//Estado: terminado
 	ChatServiceImpl() throws RemoteException{
 		l = new LinkedList<Client>();
+		id = "";
 	}
 	//Estado: terminado
 	public void chargeUser(Client c) throws RemoteException{
@@ -25,6 +27,15 @@ class ChatServiceImpl extends UnicastRemoteObject implements ChatService {
 	public List<Client> getUsers() throws RemoteException{
 		return l;
 	}
+	
+	public void setId(String n) throws RemoteException{
+	  id = n;
+	}
+	
+	public String getId() throws RemoteException{
+	  return id;
+	}
+	
 	public int validateNick(String n) throws RemoteException{
 		int error=1;
 		for (Client c:l)

@@ -16,4 +16,6 @@ interface ChatService extends Remote {
 		Client connectToUser(String nick, Client init) throws RemoteException;
 		void disconnect(Client friend, Client init) throws RemoteException;
 		void send (String c, String mssg) throws RemoteException;
+		void setId(String n) throws RemoteException;
+		public String getId() throws RemoteException;
 }
