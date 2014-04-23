@@ -11,7 +11,7 @@ import java.util.*;
 interface ChatService extends Remote {
 		void chargeUser (Client c) throws RemoteException;
 		void deleteUser (Client c) throws RemoteException;
-		List<Client> getUsers() throws RemoteException;
+		List<String> getUsers() throws RemoteException;
 		int validateNick(String n) throws RemoteException;
 		Client connectToUser(String nick, Client init) throws RemoteException;
 		void disconnect(Client friend, Client init) throws RemoteException;

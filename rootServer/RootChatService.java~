@@ -10,9 +10,12 @@ import java.rmi.*;
 import java.util.*;
 
 interface RootChatService extends Remote {
-    void chargeServer (ChatService s) throws RemoteException;
-    void deleteServer (ChatService s) throws RemoteException;
-    List<ChatService> getServers() throws RemoteException;
+    void chargeServer (ChatService s, String name) throws RemoteException;
+    void deleteServer (String s) throws RemoteException;
+    List<String> getServers() throws RemoteException;
+    List<String> getNames() throws RemoteException;
     int connectToServer() throws RemoteException;
-    int validateName(String n) throws RemoteException;
+    boolean validateId(String n) throws RemoteException;
+    void addUser(String nameClient, String nameServer) throws RemoteException;
+    void deleteUser(String nameClient, String nameServer) throws RemoteException;    
 }

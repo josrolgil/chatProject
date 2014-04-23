@@ -9,7 +9,7 @@
 	
 	class ChatServer {
 		static public void main (String args[]){
-		  List<ChatService> l;
+		  List<String> names;
 		  List<Client> lista;
 		  String id = "";
 			if (args.length!=3){
@@ -20,25 +20,24 @@
 				System.setSecurityManager(new RMISecurityManager());
 			try	{
 				System.out.println("Loading.......................Ready!");
-				ChatServiceImpl c = new ChatServiceImpl();
-		    //Cliente del servicio RootChat
+				//Cliente del servicio RootChat
 				RootChatService srv = (RootChatService) Naming.lookup("//" + args[0] + ":" + args[1] + "/RootChat");
+				
+				ChatServiceImpl c = new ChatServiceImpl(srv);
 				//Servidor del servicio Chat
 				Naming.rebind("rmi://localhost:" + args[2] + "/Chat", c);
 				Scanner sc = new Scanner(System.in);
-				int flag = 0;
-				while (flag == 0){
+				//int flag = 0;
+				//while (flag == 0){
 				  System.out.println("Introduce server id: ");
 				  id = sc.nextLine();
-				  flag = srv.validateId(id);
-				}
+				  //flag = srv.validateId(id);
+				//}
 				c.setId(id); 
-				srv.chargeServer(c);
-        l = srv.getServers();
-        showServers(l);
-        //System.out.println("Tamaño es: " + l.size());         
-        
-        //Thread.sleep(10000);
+				srv.chargeServer(c,id);
+        names = srv.getServers();
+        showServers(names);
+    
         //srv.deleteServer(c);
                 
 			} catch (RemoteException e) {
@@ -52,19 +51,17 @@
         	}		
 		}
 		
-		public static void showServers(List<ChatService> l){
+		public static void showServers(List<String> l){
 		int index;
-		ChatService u;
-		try{
+		String u;
 		System.out.println("Online servers:");
 		for(index=0;index <l.size(); index++){
 			u=l.get(index);
-			System.out.println(index+"# "+u.getId());
+			System.out.println(index+"# "+ u);
 		}
 		System.out.println("-----------------------------------------");
-		}catch (RemoteException e){
-			System.err.println("Communication Error: " + e.toString());
+		
 		}
 
 	}
-	}
+	

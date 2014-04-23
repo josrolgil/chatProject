@@ -10,21 +10,52 @@ import java.util.*;
 import java.rmi.server.*;
 
 class RootChatServiceImpl extends UnicastRemoteObject implements RootChatService {
-    List<ChatService> l;
+    List<LocalServer> l;
     RootChatServiceImpl() throws RemoteException{
-       l = new LinkedList<ChatService>();
+       l = new LinkedList<LocalServer>();
     }
     
-    public void chargeServer(ChatService s) throws RemoteException{
-       l.add(s);
+    public void chargeServer(ChatService s, String name) throws RemoteException{
+       LocalServer localServer = new LocalServer(name, s);
+       if(!validateId(name))
+         l.add(localServer);
     }
     
-    public void deleteServer(ChatService s) throws RemoteException{
-       l.remove(l.indexOf(s));
+    public void deleteServer(String s) throws RemoteException{
+      for(int i =0; i<l.size(); i++)
+      {
+        if(l.get(i).getRef(s))
+           l.remove(i);
+      }
     }
     
-    public List<ChatService> getServers() throws RemoteException{
-       return l;
+    public List<String> getServers() throws RemoteException{
+       List<String> names = new LinkedList<String>();
+       for (LocalServer s:l)
+          names.add(s.getName());
+       
+       return names;
+    }
+    
+    public List<String> getNames() throws RemoteException{
+      List<String> res = new LinkedList<String>();
+      for (LocalServer s:l)
+       {
+         res.addAll(s.getClients());
+       }
+      return res;
+    }    
+    
+    public ChatService getServiceOfClient(String nameClient) throws RemoteException{
+      ChatService server = null;
+       for (LocalServer s:l)
+        {
+          if(s.findClient(nameClient)){
+             server = s.getServer();
+             break;
+          }
+        }
+      return server;
     }
     
     //Estado: devolverá un 1 si un cliente se encuentra en la lista de otro Server. Recorrerá todas las listas de los 
@@ -35,12 +66,23 @@ class RootChatServiceImpl extends UnicastRemoteObject implements RootChatService
       return resul;
     }
     
-    public int validateId(String n) throws RemoteException{
-      int error = 1;
-      for (ChatService s:l)
-         //if(s.getId().equals(n))
-            error = 0;
-      return error;
+    public boolean validateId(String n) throws RemoteException{
+      boolean res = false;
+      for (LocalServer s:l)
+         if(s.getRef(n))
+            res = true;
+      return res;
     }
     
+    public void addUser(String nameClient, String nameServer){
+       for (LocalServer s:l)
+          if(s.getName().equals(nameServer))
+             s.addClient(nameClient);
+    }
+    
+    public void deleteUser(String nameClient, String nameServer){
+       for (LocalServer s:l)
+           if(s.getName().equals(nameServer))
+             s.deleteClient(nameClient);
+    }
 }

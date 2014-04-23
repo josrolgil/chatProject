@@ -10,13 +10,21 @@ import java.rmi.server.*;
 class ChatServiceImpl extends UnicastRemoteObject implements ChatService {
 	List<Client> l;
 	String id;
+	RootChatService rootService;
 	//Estado: terminado
-	ChatServiceImpl() throws RemoteException{
+	
+	/*ChatServiceImpl() throws RemoteException{
+	  id = "";
+	}
+	*/
+	ChatServiceImpl(RootChatService srv) throws RemoteException{
+		rootService = srv;
 		l = new LinkedList<Client>();
 		id = "";
 	}
 	//Estado: terminado
 	public void chargeUser(Client c) throws RemoteException{
+	  rootService.addUser(c.getNickname(),id);
 		l.add(c);
 	}
 	//Estado=terminado
@@ -24,8 +32,10 @@ class ChatServiceImpl extends UnicastRemoteObject implements ChatService {
 		l.remove(l.indexOf(c));
 	}
 	//Estado: terminado
-	public List<Client> getUsers() throws RemoteException{
-		return l;
+	public List<String> getUsers() throws RemoteException{
+	  List<String> names = new LinkedList<String>();
+	  names = rootService.getNames(); 
+		return names;
 	}
 	
 	public void setId(String n) throws RemoteException{
@@ -38,8 +48,10 @@ class ChatServiceImpl extends UnicastRemoteObject implements ChatService {
 	
 	public int validateNick(String n) throws RemoteException{
 		int error=1;
-		for (Client c:l)
-			if(c.getNickname().equals(n))
+		List<String> names = new LinkedList<String>();
+		names = rootService.getNames();
+		for (String temp:names)
+			if(temp.equals(n))
 				error=0;
 		return error;	
 	}
@@ -47,8 +59,10 @@ class ChatServiceImpl extends UnicastRemoteObject implements ChatService {
 	public Client connectToUser(String nick, Client init) throws RemoteException{
 		Client aux=null;
 		init.setFriend(nick);
+		boolean flag = true;
 		for(Client c:l){
 			if(c.getNickname().equals(nick) && (c.getFriend().equals("") ||c.getFriend().equals(init.getNickname()))){
+			  flag = false;
 				c.message("!!!!!! "+init.getNickname()+" wants to talk with you!");
 				init.message("Waiting for response");
 				while(c.getFriend().equals(""));
@@ -62,8 +76,15 @@ class ChatServiceImpl extends UnicastRemoteObject implements ChatService {
 				}
 			}
 		}
+		if (flag)
+		{
+		  ChatService serverTemp = rootService.getServiceOfClient(nick);
+		  aux = serverTemp.connectToUser(nick,init);
+		}
+		
 		return aux;	
 	}
+	
 	public void disconnect(Client friend, Client init) throws RemoteException{
 	l.get(l.indexOf(init)).setFriend("");
 	friend.message("The partner has finished the session. Introduce 'exit' to finish too.");

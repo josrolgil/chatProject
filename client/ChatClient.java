@@ -1,9 +1,3 @@
-/*
-	File: ChatClient.java
-	Author: José María Roldán Gil
-	Description:
-*/
-
 import java.util.*;
 import java.rmi.*;
 import java.rmi.server.*;
@@ -15,7 +9,7 @@ class ChatClient{
 		String nn=""; //Nickname
 		String friend="";
 		String mssg="";
-		List<Client> l;
+		List<String> clientList;
 		Client partner;
 		//////////////////////////////////////////////////////////////////////////
 		if (args.length!=2){
@@ -37,15 +31,14 @@ class ChatClient{
 			}
 			c.setNickname(nn);			
 			srv.chargeUser(c);
-			l=srv.getUsers();
-			showUsers(l);
+			clientList=srv.getUsers();
+			showUsers(clientList);
 			while(!friend.equals("exit")){
 				System.out.println("Introduce the user you want to chat:");
-				l=srv.getUsers();
-				showUsers(l);
+				showUsers(clientList);
 				friend=sc.nextLine();
 				System.out.println("Se ha seleccionado: " +friend);
-				partner=srv.connectToUser(friend,c);  //¿Cómo hago para llamar a connectToServer solo cuando aqui no se encuentre?
+				partner=srv.connectToUser(friend,c); 
 				while(partner!=null  && !mssg.equals("exit") && !friend.equals("exit")){
 					mssg=sc.nextLine();
               		partner.sendComment(c.getNickname(),mssg);
@@ -63,19 +56,17 @@ class ChatClient{
             e.printStackTrace();
         }
 	}
-    public static void showUsers(List<Client> l){
+    public static void showUsers(List<String> l){
 		int index;
-		Client u;
-		try{
+		String u;
 		System.out.println("Online nicknames:");
 		for(index=0;index <l.size(); index++){
 			u=l.get(index);
-			System.out.println(index+"# "+u.getNickname());
+			System.out.println(index+"# "+u);
 		}
 		System.out.println("-----------------------------------------");
-		}catch (RemoteException e){
-			System.err.println("Communication Error: " + e.toString());
+
 		}
 
 	}
-}
+
